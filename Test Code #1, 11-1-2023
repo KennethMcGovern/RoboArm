@@ -1,0 +1,42 @@
+
+#define dirPin 2 //direction
+#define stepPin 3 //step-pulse
+#define enaPin 4 //enable-motor
+#define STPR 300 //steps-per-revolution 200 = 360*
+int input;
+int k;
+
+void setup() {
+
+ pinMode(stepPin, OUTPUT);
+ pinMode(dirPin, OUTPUT);
+ pinMode(enaPin, OUTPUT);
+ Serial.begin(9600);
+ Serial.println();
+ input = 0;
+}
+
+void loop() {
+  if(Serial.available()){
+    input = Serial.read();
+    k = input;
+  }
+ xMoveSteps(false, k*2);
+ delay(4000); //delay 4 seconds
+ Serial.print(k);
+}
+
+void xMoveSteps(bool dir, int steps){
+
+ digitalWrite(enaPin, LOW); //enable movement or lock
+ digitalWrite(dirPin, dir);
+
+ for (int i = 0; i < steps; i++) {
+   digitalWrite(stepPin, HIGH);
+   delayMicroseconds(2000);
+   digitalWrite(stepPin, LOW);
+   delayMicroseconds(2000);
+ }
+
+ digitalWrite(enaPin, HIGH); //disable movement or free
+}
